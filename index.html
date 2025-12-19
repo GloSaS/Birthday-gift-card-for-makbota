@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday Bestie 💖</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(120deg, #fbc2eb, #a6c1ee, #fddb92);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      overflow-x: hidden;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      position: relative;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Page styles */
+    .page {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 100vh;
+      padding: 2rem;
+      animation: fadeSlideOut 0.5s forwards;
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    .page.active {
+      display: flex;
+      animation: fadeSlideIn 0.8s forwards;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    @keyframes fadeSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @keyframes fadeSlideOut {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+      }
+    }
+
+    /* Glass container */
+    .glass {
+      background: rgba(255 255 255 / 0.3);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      padding: 3rem 2.5rem;
+      max-width: 600px;
+      box-shadow: 0 8px 32px rgba(255, 192, 203, 0.3);
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Headers pulse */
+    h1, h2 {
+      animation: pulseHeader 3s ease-in-out infinite;
+      user-select: none;
+    }
+    @keyframes pulseHeader {
+      0%, 100% { transform: scale(1); color: #db2777; }
+      50% { transform: scale(1.05); color: #f43f5e; }
+    }
+
+    /* Paragraph fade and slide up */
+    p {
+      opacity: 0;
+      transform: translateY(15px);
+      animation: fadeSlideUp 1s forwards;
+      animation-delay: 0.3s;
+      color: #5b21b6;
+      font-weight: 600;
+      user-select: text;
+    }
+    .page.active p {
+      animation-play-state: running;
+    }
+    @keyframes fadeSlideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Floating hearts background */
+    #hearts {
+      pointer-events: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      overflow: visible;
+    }
+    .heart {
+      position: absolute;
+      color: rgba(255, 105, 180, 0.4);
+      font-size: 18px;
+      animation: floatUp linear infinite;
+      user-select: none;
+      will-change: transform, opacity;
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(110vh) scale(0.7);
+        opacity: 0;
+      }
+      30% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-20vh) scale(1.1);
+        opacity: 0;
+      }
+    }
+
+    /* Sparkles container */
+    #sparkles {
+      pointer-events: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      overflow: visible;
+      z-index: 1;
+    }
+    .sparkle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      filter: drop-shadow(0 0 4px white);
+      animation: sparklePulse 2s infinite;
+    }
+    @keyframes sparklePulse {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 0.2; transform: scale(0.7); }
+    }
+
+    /* Navigation buttons */
+    .nav-btn {
+      background: rgba(255 255 255 / 0.85);
+      color: #7f1d78;
+      font-weight: 600;
+      border-radius: 9999px;
+      padding: 0.75rem 1.75rem;
+      box-shadow: 0 6px 10px rgba(255, 192, 203, 0.5);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      border: none;
+      font-size: 1.1rem;
+    }
+    .nav-btn:hover {
+      background-color: #f9a8d4;
+      transform: scale(1.1);
+      box-shadow: 0 8px 15px rgba(255, 105, 180, 0.7);
+    }
+    .nav-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 5px 8px rgba(255, 105, 180, 0.5);
+    }
+
+    /* Confetti container */
+    #confetti {
+      pointer-events: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      overflow: visible;
+      z-index: 9999;
+    }
+
+    /* Flower animation styles */
+    .flower {
+      position: absolute;
+      bottom: -40px;
+      font-size: 28px;
+      opacity: 0;
+      animation-name: floatFlower;
+      animation-timing-function: ease-out;
+      animation-iteration-count: infinite;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes floatFlower {
+      0% {
+        opacity: 0;
+        transform: translateY(0) translateX(0) scale(0.6);
+      }
+      10% {
+        opacity: 1;
+        scale: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-180px) translateX(var(--flower-x)) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating hearts -->
+<div id="hearts"></div>
+<!-- Sparkles -->
+<div id="sparkles"></div>
+<!-- Confetti -->
+<canvas id="confetti"></canvas>
+
+<!-- Pages container -->
+<div id="pages">
+
+  <!-- Your pages... -->
+  <section class="page active">
+    <div class="glass">
+      <h1 class="text-5xl font-extrabold mb-6 select-none">🎉 Happy Birthday 🎉</h1>
+      <p>To The beautiful Makbota — you light up my world.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">You Are So Special ✨</h2>
+      <p>Your kindness and smile brighten everyone's day.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Beautiful Inside & Out 🌸</h2>
+      <p>Your heart shines brighter than the stars above.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Thank You 💐</h2>
+      <p>For every moment, every laugh, every shared secret.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Crazy Memories 😂</h2>
+      <p>From silly adventures to late-night talks — unforgettable!</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Dream Big 🌈</h2>
+      <p>There’s nothing you can’t achieve. I believe in you always.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Your Smile 😊</h2>
+      <p>Your smile changes the mood of the room — never lose it.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Always Here 🤍</h2>
+      <p>Through thick and thin, you’ll always have me by your side.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Your Strength 💪</h2>
+      <p>You inspire me every day with your courage and grace.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Laughter & Joy 😂</h2>
+      <p>May your life be filled with endless laughter and happiness.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Forever Friends 👯‍♀️</h2>
+      <p>No matter the distance, our bond will never fade.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Shine Bright ✨</h2>
+      <p>Keep shining your light — the world needs your sparkle.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Cheers to You 🥂</h2>
+      <p>Here’s to another year of amazing memories and adventures.</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="glass">
+      <h2 class="text-4xl font-semibold mb-5 select-none">Make a Wish 🎂</h2>
+      <p>Close your eyes, dream big, and make this year unforgettable.</p>
+    </div>
+  </section>
+  
+  <section class="page">
+    <div class="glass relative overflow-visible"> <!-- relative + overflow visible -->
+      <h2 class="text-5xl font-extrabold mb-5 select-none">Happy Birthday Bestie 💖</h2>
+      <p>With all my love & appreciation — forever and always 🌷</p>
+
+      <!-- Flowers container -->
+      <div id="flowers" class="absolute bottom-0 left-0 right-0 pointer-events-none" style="height: 200px; overflow: visible;"></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Navigation buttons -->
+<div class="fixed bottom-6 left-0 right-0 flex justify-center gap-6 z-10">
+  <button class="nav-btn" onclick="prevPage()">⬅ Prev</button>
+  <button class="nav-btn" id="nextBtn" onclick="nextPage()">Next ➡</button>
+</div>
+
+<script>
+  const pages = document.querySelectorAll('.page');
+  let current = 0;
+
+  function showPage(index) {
+    pages.forEach(p => p.classList.remove('active'));
+    pages[index].classList.add('active');
+    animateParagraphs(pages[index]);
+  }
+
+  function animateParagraphs(page) {
+    const p = page.querySelector('p');
+    if (p) {
+      p.style.opacity = 0;
+      p.style.transform = 'translateY(15px)';
+      setTimeout(() => {
+        p.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        p.style.opacity = 1;
+        p.style.transform = 'translateY(0)';
+      }, 50);
+    }
+  }
+
+  function nextPage() {
+    if (current < pages.length - 1) {
+      current++;
+      showPage(current);
+      if(current === pages.length - 1) {
+        startConfetti();
+        startFlowers();
+        document.getElementById('nextBtn').disabled = true;
+        document.getElementById('nextBtn').textContent = "🎉 That's all!";
+      }
+    }
+  }
+
+  function prevPage() {
+    if (current > 0) {
+      current--;
+      showPage(current);
+      if(current < pages.length - 1) {
+        stopConfetti();
+        stopFlowers();
+        const nextBtn = document.getElementById('nextBtn');
+        nextBtn.disabled = false;
+        nextBtn.textContent = "Next ➡";
+      }
+    }
+  }
+
+  // Floating hearts effect
+  const hearts = document.getElementById("hearts");
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = 6 + Math.random() * 4 + "s";
+    hearts.appendChild(heart);
+    setTimeout(() => heart.remove(), 10000);
+  }, 350);
+
+  // Sparkles effect
+  const sparkles = document.getElementById('sparkles');
+  function createSparkle() {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.style.top = Math.random() * 100 + 'vh';
+    sparkle.style.left = Math.random() * 100 + 'vw';
+    sparkle.style.animationDuration = 1 + Math.random() * 2 + 's';
+    sparkle.style.animationDelay = (Math.random() * 5) + 's';
+    sparkles.appendChild(sparkle);
+    setTimeout(() => sparkle.remove(), 7000);
+  }
+  setInterval(createSparkle, 500);
+
+  // Confetti effect using canvas
+  const confettiCanvas = document.getElementById('confetti');
+  const ctx = confettiCanvas.getContext('2d');
+  let confettiPieces = [];
+  let animationFrameId;
+
+  function resizeCanvas() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  class ConfettiPiece {
+    constructor() {
+      this.x = Math.random() * confettiCanvas.width;
+      this.y = Math.random() * confettiCanvas.height - confettiCanvas.height;
+      this.size = 7 + Math.random() * 5;
+      this.speed = 2 + Math.random() * 3;
+      this.angle = Math.random() * 360;
+      this.spinSpeed = 0.1 + Math.random() * 0.2;
+      this.colors = ['#f43f5e', '#ec4899', '#f9a8d4', '#db2777', '#be185d'];
+      this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+    }
+
+    update() {
+      this.y += this.speed;
+      this.angle += this.spinSpeed;
+      if (this.y > confettiCanvas.height) {
+        this.y = -this.size;
+        this.x = Math.random() * confettiCanvas.width;
+      }
+    }
+
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.angle);
+      ctx.fillStyle = this.color;
+      ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size/2);
+      ctx.restore();
+    }
+  }
+
+  function startConfetti() {
+    for(let i=0; i<150; i++) {
+      confettiPieces.push(new ConfettiPiece());
+    }
+    if(!animationFrameId) {
+      animationFrameId = requestAnimationFrame(animateConfetti);
+    }
+  }
+  function stopConfetti() {
+    confettiPieces = [];
+    if(animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    }
+  }
+
+  function animateConfetti() {
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    confettiPieces.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    animationFrameId = requestAnimationFrame(animateConfetti);
+  }
+
+  // Flowers animation for last page
+  const flowersContainer = document.getElementById('flowers');
+  const flowerEmojis = ['🌸', '🌺', '🌷', '💐', '🌼', '🌻'];
+  let flowerIntervalId;
+  let flowerCount = 0;
+  const maxFlowers = 40;
+
+  function createFlower() {
+    const flower = document.createElement('div');
+    flower.className = 'flower';
+    flower.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+    flower.style.left = Math.random() * 90 + '%'; // spread horizontally inside container
+    // Random horizontal movement offset for animation (negative or positive)
+    const flowerX = (Math.random() * 100) - 50; // between -50 and +50 px
+    flower.style.setProperty('--flower-x', flowerX + 'px');
+    // Random animation duration and delay for natural effect
+    const duration = 6 + Math.random() * 6; // 6 to 12 seconds
+    const delay = Math.random() * 5; // up to 5 seconds delay
+    flower.style.animationDuration = duration + 's';
+    flower.style.animationDelay = delay + 's';
+
+    flowersContainer.appendChild(flower);
+
+    // Remove flower after animation completes to keep DOM clean
+    setTimeout(() => {
+      flower.remove();
+    }, (duration + delay) * 1000);
+  }
+
+  function startFlowers() {
+    // Create some flowers immediately
+    for(let i=0; i<10; i++) {
+      setTimeout(createFlower, i * 500);
+    }
+    // Then create flowers periodically
+    flowerIntervalId = setInterval(() => {
+      if (flowersContainer.children.length < maxFlowers) {
+        createFlower();
+      }
+    }, 500);
+  }
+
+  function stopFlowers() {
+    clearInterval(flowerIntervalId);
+    // Remove all existing flowers
+    flowersContainer.innerHTML = '';
+  }
+
+  // Initialize first page content
+  animateParagraphs(pages[0]);
+
+</script>
+
+</body>
+</html>
